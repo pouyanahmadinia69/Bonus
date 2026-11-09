@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Bonus</title>
+<meta name="theme-color" content="#e6e9ff">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Bonus">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;600;800&display=swap">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+:root{--bg1:#e6e9ff;--bg2:#f4efff;--card:rgba(255,255,255,.96);--cardb:#fff;--ink:#1b1e3c;--mute:#7b7ea0;--line:rgba(99,102,241,.14);--pri:#5b6cf0;--pri2:#8b5cf6;--fld:#eef0ff;--ok:#14935a;--bad:#d6322b;--sh:0 12px 32px rgba(91,108,240,.16);--navbg:rgba(255,255,255,.97);--acc:#ff7a6b;--acc2:#ff5f8a}
+@media(prefers-color-scheme:dark){:root{--bg1:#12142b;--bg2:#1c1636;--card:rgba(38,40,80,.96);--cardb:rgba(255,255,255,.1);--ink:#eceeff;--mute:#a3a6cc;--line:rgba(255,255,255,.1);--fld:rgba(255,255,255,.08);--ok:#4cd08a;--bad:#ff7a70;--navbg:rgba(30,32,66,.97)}}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;margin:0}
+body{background:linear-gradient(165deg,var(--bg1),var(--bg2)) fixed;color:var(--ink);font:15px/1.7 Vazirmatn,Tahoma,sans-serif;overscroll-behavior:none}
+body::before{content:"";position:fixed;inset:0;z-index:-1;background:radial-gradient(420px 320px at 90% 10%,rgba(79,125,240,.3),transparent 70%),radial-gradient(420px 340px at 6% 88%,rgba(255,122,107,.24),transparent 70%),radial-gradient(380px 300px at 18% 28%,rgba(139,92,246,.22),transparent 70%)}
+.top{position:fixed;top:0;inset-inline:0;z-index:5;display:flex;align-items:center;gap:10px;padding:calc(env(safe-area-inset-top,0px) + 8px) 16px 8px;background:var(--card);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border-bottom:1px solid var(--cardb)}
+.top img{width:38px;height:38px;border-radius:12px;box-shadow:0 6px 14px rgba(91,108,240,.35)}
+.top b{font-size:20px;font-weight:800}.top small{margin-inline-start:auto;color:var(--mute);font-size:12px}
+main{padding:calc(env(safe-area-inset-top,0px) + 64px) 14px calc(env(safe-area-inset-bottom,0px) + 116px);max-width:720px;margin:0 auto}
+h2{font-size:16px;margin:16px 4px 8px}
+.c{background:var(--card);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid var(--cardb);border-radius:24px;padding:14px;margin-bottom:12px;box-shadow:var(--sh),inset 0 1px 0 rgba(255,255,255,.7)}
+button{font:inherit;font-weight:600;cursor:pointer;border:1px solid var(--cardb);background:var(--card);color:var(--ink);border-radius:16px;padding:9px 16px;box-shadow:0 5px 14px rgba(91,108,240,.15),inset 0 1px 0 rgba(255,255,255,.8);transition:transform .1s}
+button:active{transform:scale(.96)}
+button.pri{background:linear-gradient(135deg,var(--pri),var(--pri2));color:#fff;border-color:transparent;box-shadow:0 10px 22px rgba(91,108,240,.42),inset 0 1px 0 rgba(255,255,255,.35)}
+button.sm{padding:1px 10px;font-size:12px;border-radius:10px;box-shadow:none}
+button.full{width:100%;margin-top:10px}
+.x{color:var(--bad)}
+input,select{font:inherit;width:100%;border:1px solid transparent;border-radius:14px;padding:9px 10px;background:var(--fld);color:var(--ink);text-align:center;min-width:0;box-shadow:inset 0 2px 5px rgba(91,108,240,.13)}
+select{text-align:right}input.nm{text-align:right}input[readonly]{opacity:.7}
+input.bad{border-color:var(--bad);background:rgba(214,50,43,.12)}
+:focus-visible{outline:2px solid var(--pri);outline-offset:1px}
+label{display:block;font-size:12px;color:var(--mute);margin-bottom:8px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.seg{display:flex;gap:4px;background:var(--fld);border-radius:18px;padding:4px;margin-bottom:12px;box-shadow:inset 0 2px 6px rgba(91,108,240,.12)}
+.seg button{flex:1;border:0;background:transparent;box-shadow:none;padding:7px}
+.seg button.on,.chip.on{background:linear-gradient(135deg,var(--pri),var(--pri2));color:#fff;box-shadow:0 6px 14px rgba(91,108,240,.4)}
+.chips{display:flex;gap:8px;overflow-x:auto;padding:2px 2px 10px}
+.chip{white-space:nowrap;border-radius:20px;padding:4px 16px}
+.row{display:flex;align-items:center;gap:8px;padding:9px 0;border-bottom:1px solid var(--line)}
+.row .lab{flex:1;font-size:13px}
+.sc{display:flex;align-items:center;gap:6px;width:136px}.sc .w{font-size:11px;color:var(--mute);white-space:nowrap}
+.tot{display:flex;justify-content:space-between;font-size:16px;padding-top:8px}
+.msg{font-size:13px;margin-top:6px}.ok{color:var(--ok)}.er{color:var(--bad)}
+.nv{display:flex;gap:8px;margin-top:6px}.nv button{flex:1}
+.pc{display:flex;gap:10px;align-items:center}
+.rk{flex:none;width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,#e1e4ff,#f0e8ff);color:var(--pri);font-weight:800;display:grid;place-items:center;box-shadow:inset 0 1px 0 #fff,0 4px 10px rgba(91,108,240,.2)}
+.rk.r1{background:linear-gradient(135deg,var(--pri),var(--pri2));color:#fff;box-shadow:0 6px 16px rgba(91,108,240,.5)}
+.pm{flex:1;min-width:0}.pm small{display:block;color:var(--mute);font-size:12px}
+.amt{font-weight:800;font-size:18px;text-align:left;white-space:nowrap}.amt small{display:block;font-size:11px;font-weight:400;color:var(--mute)}
+.pb{height:8px;background:var(--fld);border-radius:6px;margin:4px 0;box-shadow:inset 0 1px 3px rgba(91,108,240,.15)}.pb i{display:block;height:100%;background:linear-gradient(90deg,var(--pri),var(--pri2));border-radius:6px}
+.hero{position:relative;overflow:hidden;background:linear-gradient(135deg,#5b6cf0,#8b5cf6);color:#fff;border-radius:28px;padding:18px;margin-bottom:12px;box-shadow:0 18px 36px rgba(91,108,240,.4),inset 0 1px 0 rgba(255,255,255,.4)}
+.hero b{font-size:30px}.hero small{opacity:.85}.hero .pb{background:rgba(255,255,255,.28);box-shadow:none;height:10px;margin:10px 0 6px}.hero .pb i{background:#fff}
+.hero .mt{position:absolute;left:0;bottom:0;width:55%;height:70%;opacity:.16}.hero>*:not(.mt){position:relative}
+.kp{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+.kp div{background:var(--card);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid var(--cardb);border-radius:22px;padding:12px;box-shadow:var(--sh),inset 0 1px 0 rgba(255,255,255,.7)}
+.kp small{display:block;color:var(--mute);font-size:12px}.kp b{font-size:16px}
+.ico{display:grid;place-items:center;width:34px;height:34px;border-radius:50%;margin-bottom:6px;box-shadow:0 6px 12px rgba(91,108,240,.3),inset 0 1px 0 rgba(255,255,255,.5)}
+.ico svg{width:18px;height:18px;fill:none;stroke:#fff;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.i1{background:linear-gradient(135deg,#b39bff,#8b5cf6)}.i2{background:linear-gradient(135deg,#7aa8ff,#4f7df0)}.i3{background:linear-gradient(135deg,#ffa08f,#ff6f7a)}.i4{background:linear-gradient(135deg,#6fe0c0,#26b894)}
+.tw{overflow-x:auto}.tw.c{padding:0;overflow:hidden}.tw.c>table,.tw table{min-width:100%}
+table{border-collapse:collapse;width:100%;font-size:13px}
+th{background:linear-gradient(135deg,var(--pri),var(--pri2));color:#fff;padding:8px 5px;font-weight:600}td{border-bottom:1px solid var(--line);padding:7px 5px;text-align:center}td:nth-child(2){text-align:right}
+tr.t td{font-weight:800;background:var(--fld)}
+.sub{color:var(--mute);font-size:12px}
+.it{display:flex;gap:6px;margin-bottom:8px}.it input:first-of-type{flex:1}.it input.w{width:72px}
+nav{position:fixed;left:10px;right:10px;bottom:calc(env(safe-area-inset-bottom,0px) + 10px);height:66px;z-index:6;display:flex;align-items:center;padding:0 6px;background:var(--navbg);backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);border:1px solid var(--cardb);border-radius:32px;box-shadow:0 16px 36px rgba(91,108,240,.3),inset 0 1px 0 rgba(255,255,255,.8)}
+nav .t{flex:1;border:0;background:none;box-shadow:none;color:var(--mute);font:600 10.5px Vazirmatn,Tahoma,sans-serif;padding:7px 0 5px;border-radius:22px;display:flex;flex-direction:column;align-items:center;gap:1px}
+nav .t svg{width:23px;height:23px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+nav .t.on{color:var(--pri);background:rgba(91,108,240,.14)}
+.slot{flex:none;width:74px;height:100%;position:relative;display:flex;justify-content:center}
+.slot span{position:absolute;bottom:5px;font-size:10.5px;font-weight:700;color:var(--pri)}
+.fab{position:absolute;top:-26px;width:62px;height:62px;padding:0;border-radius:50%;display:grid;place-items:center;background:linear-gradient(135deg,var(--pri),var(--pri2));border:4px solid var(--cardb);box-shadow:0 14px 26px rgba(91,108,240,.55),inset 0 2px 0 rgba(255,255,255,.45)}
+.fab svg{width:28px;height:28px;fill:none;stroke:#fff;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+.fab.dirty::after{content:"";position:absolute;top:-1px;right:-1px;width:15px;height:15px;border-radius:50%;background:#ff8a5b;border:2px solid #fff}
+#ov{position:fixed;inset:0;background:rgba(20,22,60,.45);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;padding:16px;z-index:9}
+#ov .box{background:var(--navbg);backdrop-filter:blur(22px);border:1px solid var(--cardb);border-radius:28px;padding:20px;max-width:420px;width:100%;box-shadow:0 24px 50px rgba(40,40,120,.4)}
+#ov .r{display:flex;gap:8px;justify-content:flex-end;margin-top:16px}
+#toast{position:fixed;bottom:calc(env(safe-area-inset-bottom,0px) + 104px);left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#2a2f6b,#5b3fb0);color:#fff;padding:9px 18px;border-radius:22px;display:none;z-index:10;font-size:13px;box-shadow:0 10px 24px rgba(40,40,120,.4)}
+.go{background:linear-gradient(135deg,var(--acc),var(--acc2));color:#fff;border-color:transparent;box-shadow:0 10px 22px rgba(255,95,138,.4),inset 0 1px 0 rgba(255,255,255,.4)}
+.av{flex:none;width:46px;height:46px;border-radius:50%;display:grid;place-items:center;color:#fff;font-weight:800;font-size:19px;box-shadow:0 8px 16px rgba(91,108,240,.3),inset 0 1px 0 rgba(255,255,255,.5)}
+.rb{display:inline-grid;place-items:center;min-width:22px;height:22px;border-radius:11px;background:var(--fld);color:var(--pri);font-size:12px;font-weight:800;padding:0 6px}
+.rb.r1{background:linear-gradient(135deg,var(--acc),var(--acc2));color:#fff}
+.hero::after{content:"";position:absolute;left:-40px;top:-50px;width:170px;height:170px;border-radius:50%;background:radial-gradient(circle,rgba(255,138,107,.8),transparent 70%);pointer-events:none}
+.hero>*:not(.mt){z-index:1}
+h2::before{content:"";display:inline-block;width:9px;height:9px;border-radius:50%;background:linear-gradient(135deg,var(--acc),var(--acc2));margin-inline-end:8px}
+</style>
+</head>
+<body>
+<div class="top"><img src="icons/icon-192.png" alt=""><b>Bonus</b><small id="today"></small></div>
+<main id="view"></main>
+<nav id="nav"></nav>
+<div id="ov"><div class="box"><div id="ovt"></div><div class="r"><button id="ovn">انصراف</button><button class="pri" id="ovy">تایید</button></div></div></div>
+<div id="toast"></div>
+<input type="file" id="xf" accept=".xlsx,.xls" hidden>
+<input type="file" id="bf" accept=".json" hidden>
+
+<script>
+const $=id=>document.getElementById(id);
+const KEY='bonus-app-v2';
+const FA='۰۱۲۳۴۵۶۷۸۹';
+const MONTHS=['فروردین','اردیبهشت','خرداد','تیر','مرداد','شهریور','مهر','آبان','آذر','دی','بهمن','اسفند'];
+const DAYS=['یکشنبه','دوشنبه','سه‌شنبه','چهارشنبه','پنجشنبه','جمعه','شنبه'];
+const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+/* ---- Jalali ---- */
+function g2j(gy,gm,gd){const d=[0,31,59,90,120,151,181,212,243,273,304,334],g2=gm>2?gy+1:gy;
+  let days=355666+365*gy+Math.floor((g2+3)/4)-Math.floor((g2+99)/100)+Math.floor((g2+399)/400)+gd+d[gm-1];
+  let jy=-1595+33*Math.floor(days/12053);days%=12053;jy+=4*Math.floor(days/1461);days%=1461;
+  if(days>365){jy+=Math.floor((days-1)/365);days=(days-1)%365}
+  const jm=days<186?1+Math.floor(days/31):7+Math.floor((days-186)/30),jd=1+(days<186?days%31:(days-186)%30);return[jy,jm,jd]}
+const p2=n=>String(n).padStart(2,'0');
+function jNow(){const t=new Date(),j=g2j(t.getFullYear(),t.getMonth()+1,t.getDate());
+  return{date:`${j[0]}/${p2(j[1])}/${p2(j[2])}`,time:`${p2(t.getHours())}:${p2(t.getMinutes())}`,long:`${DAYS[t.getDay()]} ${j[2]} ${MONTHS[j[1]-1]} ${j[0]}`,period:`${MONTHS[j[1]-1]} ${j[0]}`,iso:t.toISOString()}}
+
+/* ---- digits ---- */
+function norm(s){return String(s).replace(/[۰-۹]/g,c=>c.charCodeAt(0)-1776).replace(/[٠-٩]/g,c=>c.charCodeAt(0)-1632).replace(/[٫\/]/g,'.').replace(/[٬،,]/g,'').replace(/%|٪/g,'').trim()}
+function num(s){const n=parseFloat(norm(s));return isFinite(n)?n:NaN}
+function dg(s){s=String(s);return S.digits==='fa'?s.replace(/\d/g,d=>FA[d]).replace(/\./g,'٫'):s}
+const ns=n=>dg(String(+(+n).toFixed(2)));
+function money(n){return dg(String(Math.round(+n)).replace(/\B(?=(\d{3})+$)/g,'_')).replace(/_/g,S.digits==='fa'?'٬':',')}
+const dateStr=s=>dg(String(s).replace(/\./g,'/'));
+
+/* ---- state ---- */
+const P=n=>({name:n,code:'',role:'',phone:'',note:''});
+function blank(zero){const it=[['مدیریت در زمان بروز مشکل (سرعت پاسخ و رفع، ریشه‌یابی، گزارش پس از مشکل)',20],['در دسترس بودن در زمان دورکاری و خارج از ساعات اداری',20],['بررسی و تحلیل CRs و TTs',15],['مدیریت و ارزیابی عملکرد پیمانکار',15],['مسئولیت‌پذیری و همکاری بین‌تیمی',10],['بروز بودن و انتقال دانش',10],['تشخیص ویژه (اختیاری مدیر)',10]];
+  const sc=[[18,16,14,19,14],[18,16,15,18,14],[13,12,11,14,10],[14,13,12,14,11],[9,8,8,9,7],[9,8,8,9,7],[4,4,3,5,3]];
+  return{title:'فرم نمره‌دهی تیم IP Operation',digits:'fa',evalDate:jNow().date,period:jNow().period,total:100000000,unit:'toman',eq:40,base:0,
+    items:it.map(a=>({name:a[0],w:a[1]})),people:[1,2,3,4,5].map(i=>P('نفر '+i)),scores:sc.map(r=>r.map(v=>zero?0:v)),periods:[]}}
+function migrate(d){const old=d.unit!=='toman',N=Object.assign(blank(),d);N.people=N.people.map(p=>typeof p==='string'?P(p):Object.assign(P(''),p));N.periods=N.periods||[];if(old){const k=1e6;N.total*=k;N.periods.forEach(p=>{p.total*=k;p.rows.forEach(r=>['eq','vr','sh'].forEach(f=>{if(r[f]!=null)r[f]*=k}))})}N.unit='toman';N.digits='fa';return N}
+let dirty=false,S,A;
+const cl=o=>JSON.parse(JSON.stringify(o));
+function setApplied(N){A=N;S=cl(N);S.periods=A.periods;dirty=false}
+try{A=migrate(JSON.parse(localStorage.getItem(KEY)))}catch(e){A=blank()}
+setApplied(A);
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(A))}catch(e){}};
+const SB='<div class="msg er sbn"></div><button class="go full" onclick="commit()">ثبت</button>';
+function touch(){dirty=true;mark()}
+function mark(){document.querySelectorAll('.sbn').forEach(b=>b.textContent=dirty?'تغییرات هنوز اعمال نشده؛ برای اعمال «ثبت» را بزنید.':'')}
+function commit(){
+  if(document.querySelector('input.bad'))return toast('ابتدا مقدارهای قرمز را اصلاح کنید');
+  if(S.people.some(p=>!String(p.name).trim()))return toast('نام همهٔ نفرات را وارد کنید');
+  for(let i=0;i<S.items.length;i++)for(let j=0;j<S.people.length;j++){const v=+S.scores[i][j];if(v<0||v>S.items[i].w)return toast(`نمرهٔ «${S.people[j].name}» در یک آیتم از وزن آن بیشتر است`)}
+  const per=A.periods;A=cl(S);A.periods=per;S.periods=per;dirty=false;save();mark();toast('تغییرات اعمال شد')}
+window.addEventListener('beforeunload',e=>{if(dirty){e.preventDefault();e.returnValue=''}});
+
+function calc(D=A){const n=D.people.length,sc=D.people.map((_,j)=>D.items.reduce((a,_,i)=>a+(+D.scores[i][j]||0),0));
+  const ex=sc.map(x=>Math.max(0,x-D.base)),sumEx=ex.reduce((a,b)=>a+b,0),eqPart=D.total*D.eq/100/n,pool=D.total*(1-D.eq/100);
+  const vr=ex.map(e=>sumEx>0?pool*e/sumEx:pool/n),sh=vr.map(v=>v+eqPart);
+  return{n,sc,ex,sumEx,sumSc:sc.reduce((a,b)=>a+b,0),eqPart,pool,vr,sh,tot:sh.reduce((a,b)=>a+b,0)}}
+const ranks=(a,b)=>{const o=a.map((_,i)=>i).sort((x,y)=>Math.round(a[y])-Math.round(a[x])||(b?b[y]-b[x]:0)||x-y),r=[];o.forEach((i,k)=>r[i]=k+1);return r};
+function curRows(D=A){const c=calc(D),rk=ranks(c.sh,c.sc);return D.people.map((p,j)=>({name:p.name,code:p.code,role:p.role,sc:c.sc[j],ex:c.ex[j],eq:c.eqPart,vr:c.vr[j],sh:c.sh[j],pct:c.tot?c.sh[j]/c.tot*100:0,rank:rk[j],scores:D.items.map((_,i)=>+D.scores[i][j]||0)}))}
+
+/* ---- ui ---- */
+const IC={scores:'M4 20h4L19 9l-4-4L4 16z',results:'M5 20V11M12 20V4M19 20v-6',people:'M16 8a4 4 0 1 1-8 0 4 4 0 0 1 8 0M4 21c0-4 4-6 8-6s8 2 8 6',reports:'M6 3h9l4 4v14H6zM9 12h7M9 16h7',other:'M5 12h.01M12 12h.01M19 12h.01',check:'M5 12l5 5 9-10',wallet:'M4 7h16v12H4zM4 7l12-3v3M16 13h.01',trophy:'M8 4h8v5a4 4 0 0 1-8 0zM6 5H3v2a3 3 0 0 0 3 3M18 5h3v2a3 3 0 0 1-3 3M12 13v4M8 20h8'};
+const TABS=[['scores','نمرات'],['results','نتیجه'],['people','افراد'],['reports','گزارشات'],['other','سایر']];
+let tab='scores',sg='p',sel=0,rep={f:'cur',sort:'rank'},deferred=null;
+const inp=(k,v,cls)=>`<input data-k="${k}" class="${cls||''}" value="${esc(v)}" ${cls==='nm'?'':'inputmode="decimal" dir="ltr"'}>`;
+function render(){
+  $('today').textContent=dg(jNow().long);
+  $('nav').innerHTML=TABS.map(t=>`<button class="t ${t[0]===tab?'on':''}" onclick="go('${t[0]}')"><svg viewBox="0 0 24 24"><path d="${IC[t[0]]}"/></svg><span>${t[1]}</span></button>`).join('');
+  $('view').innerHTML=({scores:vScores,results:vResults,people:vPeople,reports:vReports,other:vOther})[tab]();
+  live();mark();
+}
+function go(t){tab=t;render();window.scrollTo(0,0)}
+function warn(D=S){const sw=D.items.reduce((a,b)=>a+(+b.w||0),0),w=[],c=calc(D);
+  if(Math.abs(sw-100)>1e-9)w.push(`جمع وزن‌ها ${ns(sw)} است و برابر ${dg(100)} نیست.`);
+  if(document.querySelector('input.bad'))w.push('مقدارهای قرمز نامعتبرند (بیشتر از وزن آیتم، منفی یا غیر عددی).');
+  if(c.sumEx===0)w.push('جمع مازاد صفر است؛ بخش متغیر مساوی تقسیم شد.');
+  return w.map(x=>`<div class="msg er">⚠ ${x}</div>`).join('')}
+function live(){
+  document.querySelectorAll('[data-k^="s:"]').forEach(e=>{const[,i,j]=e.dataset.k.split(':'),v=+S.scores[i][j];e.classList.toggle('bad',v>S.items[i].w||v<0)});
+  const c=calc(S),sw=S.items.reduce((a,b)=>a+(+b.w||0),0);
+  if($('ptot'))$('ptot').textContent=`${ns(c.sc[Math.min(sel,S.people.length-1)])} از ${ns(sw)}`;
+  if($('varp'))$('varp').value=dg(ns(100-S.eq))+(S.digits==='fa'?'٪':'%');
+  if($('wmsg'))$('wmsg').innerHTML=warn();
+}
+
+/* ---- tab: scores ---- */
+function vScores(){
+  const seg=`<div class="seg"><button class="${sg==='p'?'on':''}" onclick="sg='p';render()">ورود نمره</button><button class="${sg==='s'?'on':''}" onclick="sg='s';render()">تنظیمات و آیتم‌ها</button></div>`;
+  if(sg==='s')return seg+vSettings();
+  sel=Math.min(sel,S.people.length-1);const j=sel;
+  return seg+`<div class="chips">${S.people.map((p,k)=>`<button class="chip ${k===j?'on':''}" ${k===j?`style="${avc(k)}"`:''} onclick="sel=${k};render()">${esc(p.name||'—')}</button>`).join('')}</div>
+  <div class="c">${S.items.map((it,i)=>`<div class="row"><div class="lab">${esc(it.name)}</div><div class="sc"><span class="w">از ${ns(it.w)}</span>${inp(`s:${i}:${j}`,ns(S.scores[i][j]))}</div></div>`).join('')}
+  <div class="tot"><span>جمع نمره</span><b id="ptot"></b></div><div id="wmsg"></div></div>
+  <div class="nv"><button onclick="sel=(sel+S.people.length-1)%S.people.length;render()">قبلی</button><button class="pri" onclick="sel=(sel+1)%S.people.length;render()">نفر بعدی</button></div>${SB}`}
+function vSettings(){return `<div class="c"><div class="g2"><label>مبلغ کل (تومان)${inp('total',money(S.total))}</label><label>درصد بخش مساوی${inp('eq',ns(S.eq))}</label>
+  <label>نمره پایه${inp('base',ns(S.base))}</label><label>درصد بخش متغیر<input id="varp" readonly></label>
+  <label>تاریخ ارزیابی (شمسی)${inp('date',dateStr(S.evalDate))}</label><label>عنوان دوره${inp('period',S.period,'nm')}</label></div>
+  <label>عنوان فرم${inp('title',S.title,'nm')}</label></div>
+  <h2>آیتم‌ها و وزن</h2><div class="c">${S.items.map((it,i)=>`<div class="it"><button class="sm x" onclick="delItem(${i})">✕</button>${inp('i:'+i,it.name,'nm')}${inp('w:'+i,ns(it.w),'w')}</div>`).join('')}
+  <button class="full" onclick="addItem()">+ آیتم جدید</button><div id="wmsg"></div></div>${SB}`}
+function addItem(){S.items.push({name:'آیتم جدید',w:0});S.scores.push(S.people.map(()=>0));touch();render()}
+function delItem(i){if(S.items.length<2)return toast('حداقل یک آیتم لازم است');ask('این آیتم حذف شود؟',()=>{S.items.splice(i,1);S.scores.splice(i,1);touch();render()})}
+
+/* ---- tab: results ---- */
+const PAL=[['#a78bfa','#7c5cf0'],['#7aa8ff','#4f7df0'],['#ff9d8f','#ff6f7a'],['#6fe0c0','#26b894'],['#ffc666','#f5a524'],['#f58fc0','#ec5fa0']];
+const avc=j=>`background:linear-gradient(135deg,${PAL[j%6][0]},${PAL[j%6][1]})`;
+function vResults(){const c=calc(A),rows=curRows(A).map((r,j)=>({...r,j})).sort((a,b)=>a.rank-b.rank),ok=Math.abs(c.tot-A.total)<1;
+  return (dirty?'<div class="msg er" style="margin:0 4px 8px">تغییرات ثبت‌نشده‌ای دارید که هنوز در این نتیجه اعمال نشده است.</div>':'')+
+  `<div class="hero"><svg class="mt" viewBox="0 0 200 100" preserveAspectRatio="none"><path d="M0 100V70L50 30l30 30 40-50 80 70v20z" fill="#fff"/></svg><small>${esc(A.period)} — ${dateStr(A.evalDate)}</small><div><b>${money(A.total)}</b> <small>تومان</small></div><div class="pb"><i style="width:${A.eq}%"></i></div><small>بخش مساوی ${dg(ns(A.eq))}٪ • بخش متغیر ${dg(ns(100-A.eq))}٪</small></div>`+
+  rows.map(r=>`<div class="c pc"><div class="av" style="${avc(r.j)}">${esc([...(r.name||'؟')][0])}</div><div class="pm"><b><span class="rb ${r.rank===1?'r1':''}">${dg(r.rank)}</span> ${esc(r.name)}</b>${r.role?`<small>${esc(r.role)}</small>`:''}<div class="pb"><i style="width:${r.pct}%;${avc(r.j)}"></i></div><small>نمره ${ns(r.sc)} • مساوی ${money(r.eq)} • متغیر ${money(r.vr)}</small></div><div class="amt">${money(r.sh)}<small>تومان • ${dg(r.pct.toFixed(1))}٪</small></div></div>`).join('')+
+  `<div class="msg ${ok?'ok':'er'}">بررسی: مجموع سهم‌ها (${money(c.tot)}) برابر مبلغ کل — ${ok?'درست':'نادرست'}</div>${warn(A)}
+  <button class="go full" onclick="askPeriod()">ثبت این دوره در گزارشات</button>`}
+function askPeriod(){ask(`دوره «${esc(A.period)}» با تاریخ ${dateStr(A.evalDate)} در گزارشات ثبت شود؟`,()=>{
+  A.periods.push({id:Date.now(),label:A.period,date:A.evalDate,savedAt:jNow().date+' '+jNow().time,total:A.total,eq:A.eq,base:A.base,items:cl(A.items),rows:curRows(A)});save();toast('در گزارشات ثبت شد')})}
+
+/* ---- tab: people ---- */
+function vPeople(){return S.people.map((p,j)=>`<div class="c"><div class="it"><button class="sm x" onclick="delPerson(${j})">✕</button>${inp(`pf:${j}:name`,p.name,'nm')}</div>
+  <div class="g2"><label>کد پرسنلی${inp(`pf:${j}:code`,p.code)}</label><label>تلفن${inp(`pf:${j}:phone`,p.phone)}</label></div>
+  <label>سمت${inp(`pf:${j}:role`,p.role,'nm')}</label><label style="margin:0">توضیحات${inp(`pf:${j}:note`,p.note,'nm')}</label></div>`).join('')+`<button class="pri full" onclick="addPerson()">+ نفر جدید</button>${SB}`}
+function addPerson(){S.people.push(P('نفر '+(S.people.length+1)));S.scores.forEach(r=>r.push(0));touch();render()}
+function delPerson(j){if(S.people.length<2)return toast('حداقل یک نفر لازم است');ask(`«${esc(S.people[j].name)}» حذف شود؟ نمره‌های او هم پاک می‌شود (گزارش‌های ثبت‌شده می‌مانند).`,()=>{S.people.splice(j,1);S.scores.forEach(r=>r.splice(j,1));sel=0;touch();render()})}
+
+/* ---- tab: reports ---- */
+function repData(){let rows,m;
+  if(rep.f==='cur'){rows=curRows(A);m={items:A.items,total:A.total,title:A.period+' (دوره جاری)'}}
+  else if(rep.f==='all'){const o={};A.periods.forEach(p=>p.rows.forEach(r=>{const a=o[r.name]||(o[r.name]={name:r.name,role:r.role,n:0,sh:0,sc:0,rk:0});a.n++;a.sh+=r.sh;a.sc+=r.sc;a.rk+=r.rank;a.role=r.role||a.role}));
+    rows=Object.values(o).map(a=>({name:a.name,role:a.role,n:a.n,sh:a.sh,sc:a.sc/a.n,avgRank:a.rk/a.n}));const g=rows.reduce((a,r)=>a+r.sh,0);
+    rows.forEach(r=>r.pct=g?r.sh/g*100:0);const rk=ranks(rows.map(r=>r.sh),rows.map(r=>r.sc));rows.forEach((r,i)=>r.rank=rk[i]);m={total:g,title:'همه دوره‌ها (تجمیعی)',all:true}}
+  else{const p=A.periods.find(x=>x.id==rep.f);if(!p){rep.f='cur';return repData()}rows=p.rows.slice();m={items:p.items,total:p.total,title:`${p.label} — ${dateStr(p.date)}`}}
+  rows.sort(rep.sort==='name'?(a,b)=>a.name.localeCompare(b.name,'fa'):rep.sort==='score'?(a,b)=>b.sc-a.sc:(a,b)=>a.rank-b.rank);return{rows,m}}
+function vReports(){const{rows,m}=repData(),sum=rows.reduce((a,r)=>a+r.sh,0),top=rows.slice().sort((a,b)=>a.rank-b.rank)[0];
+  const opts=`<option value="cur">دوره جاری (ثبت‌نشده)</option>`+A.periods.slice().reverse().map(p=>`<option value="${p.id}">${esc(p.label)} — ${dateStr(p.date)}</option>`).join('')+(A.periods.length?'<option value="all">همه دوره‌ها (تجمیعی)</option>':'');
+  let h=`<label>گزارش دوره<select onchange="rep.f=this.value;render()">${opts}</select></label>`;
+  if(!A.periods.length)h+=`<div class="sub" style="margin-bottom:8px">هنوز دوره‌ای ثبت نشده. از تب «نتیجه» دکمهٔ «ثبت این دوره در گزارشات» را بزنید.</div>`;
+  const K=(c,p,l,v)=>`<div><i class="ico ${c}"><svg viewBox="0 0 24 24"><path d="${p}"/></svg></i><small>${l}</small><b>${v}</b></div>`;
+  h+=`<div class="kp">${K('i1',IC.wallet,'جمع پرداخت (تومان)',money(sum))}${K('i2',IC.people,'تعداد نفرات',dg(rows.length))}${K('i3',IC.trophy,'رتبه اول',top?esc(top.name):'—')}${K('i4',IC.results,'میانگین سهم (تومان)',money(rows.length?sum/rows.length:0))}</div>`;
+  h+=`<div class="seg">${[['rank','رتبه'],['name','نام'],['score','نمره']].map(s=>`<button class="${rep.sort===s[0]?'on':''}" onclick="rep.sort='${s[0]}';render()">${s[1]}</button>`).join('')}</div>`;
+  h+=`<div class="c tw"><table><tr><th>رتبه</th><th>نفر</th>${m.all?'<th>دوره</th><th>میانگین نمره</th><th>میانگین رتبه</th>':'<th>نمره</th>'}<th>سهم</th><th>درصد</th></tr>`+
+    rows.map(r=>`<tr><td>${dg(r.rank)}</td><td>${esc(r.name)}${r.role?`<div class="sub">${esc(r.role)}</div>`:''}</td>${m.all?`<td>${dg(r.n)}</td><td>${ns(r.sc)}</td><td>${ns(r.avgRank)}</td>`:`<td>${ns(r.sc)}</td>`}<td><b>${money(r.sh)}</b></td><td>${dg(r.pct.toFixed(1))}٪</td></tr>`).join('')+
+    `<tr class="t"><td colspan="${m.all?5:3}">جمع</td><td>${money(sum)}</td><td>${dg('100.0')}٪</td></tr></table></div>`;
+  if(m.items){h+=`<h2>میانگین نمرهٔ هر آیتم</h2><div class="c tw"><table><tr><th>آیتم</th><th>وزن</th><th>میانگین</th><th>٪ وزن</th></tr>`+m.items.map((it,i)=>{const v=rows.map(r=>r.scores?r.scores[i]:0),av=v.reduce((a,b)=>a+b,0)/(v.length||1);
+    return`<tr><td style="font-size:12px">${esc(it.name)}</td><td>${ns(it.w)}</td><td>${ns(av)}</td><td>${it.w?dg((av/it.w*100).toFixed(0)):dg(0)}٪</td></tr>`}).join('')+`</table></div>`}
+  h+=`<button class="full" onclick="exportReport()">خروجی اکسل این گزارش</button>`;
+  if(rep.f!=='cur'&&rep.f!=='all')h+=`<button class="full x" onclick="delPeriod()">حذف این دوره</button>`;
+  return h}
+function delPeriod(){ask('این دوره از گزارشات حذف شود؟',()=>{A.periods=A.periods.filter(p=>p.id!=rep.f);S.periods=A.periods;rep.f='cur';save();render()})}
+function exportReport(){if(!window.XLSX)return toast('کتابخانه اکسل بارگذاری نشد');const{rows,m}=repData();
+  const A=[[m.title],[],m.all?['رتبه','نفر','تعداد دوره','میانگین نمره','میانگین رتبه','جمع دریافتی (تومان)','درصد']:['رتبه','نفر','سمت','نمره','سهم (تومان)','درصد']];
+  rows.forEach(r=>A.push(m.all?[r.rank,r.name,r.n,+r.sc.toFixed(2),+r.avgRank.toFixed(2),Math.round(r.sh),+r.pct.toFixed(1)]:[r.rank,r.name,r.role||'',r.sc,Math.round(r.sh),+r.pct.toFixed(1)]));
+  const wb=XLSX.utils.book_new(),ws=XLSX.utils.aoa_to_sheet(A);ws['!cols']=[{wch:8},{wch:22},{wch:16},{wch:14},{wch:18},{wch:14},{wch:10}];XLSX.utils.book_append_sheet(wb,ws,'گزارش');wb.Workbook={Views:[{RTL:true}]};xsave(wb,`Bonus-report-${jNow().date.replace(/\//g,'-')}.xlsx`)}
+
+/* ---- tab: other ---- */
+function vOther(){const lb=localStorage.getItem(KEY+'-bk');
+  return `<h2>پشتیبان‌گیری</h2><div class="c"><div class="sub">فایل پشتیبان شامل همهٔ اطلاعات (نفرات، نمرات، تنظیمات و دوره‌های ثبت‌شده) و تاریخ ثبت شمسی است.</div>
+  <div class="sub">${lb?'آخرین پشتیبان: '+dg(lb):'هنوز پشتیبان نگرفته‌اید.'}</div>
+  <div class="g2"><button class="pri full" onclick="askBackup()">پشتیبان‌گیری</button><button class="full" onclick="$('bf').click()">بازیابی</button></div></div>
+  <h2>اکسل</h2><div class="c"><div class="g2"><button class="full" onclick="exportXlsx(false)">خروجی اکسل</button><button class="full" onclick="exportXlsx(true)">قالب اکسل</button></div><button class="full" onclick="$('xf').click()">ورود از اکسل</button></div>
+  <h2>تنظیمات برنامه</h2><div class="c">  ${deferred?'<button class="pri full" onclick="installApp()">نصب برنامه روی گوشی</button>':'<div class="sub" style="margin-top:8px">نصب: در iPhone از منوی Share گزینهٔ Add to Home Screen و در Android از منوی مرورگر گزینهٔ Install app را بزنید.</div>'}
+  <button class="full x" onclick="resetAll()">شروع از اول (پاک کردن همه اطلاعات)</button></div>
+  <div class="sub" style="text-align:center;margin-top:12px">Bonus — نسخه ۲</div>`}
+function installApp(){deferred.prompt();deferred=null}
+function resetAll(){ask('همهٔ اطلاعات (از جمله گزارش‌های ثبت‌شده) پاک می‌شود. بهتر است قبلش پشتیبان بگیرید. ادامه می‌دهید؟',()=>{setApplied(blank(true));save();sel=0;rep={f:'cur',sort:'rank'};render()})}
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferred=e;if(tab==='other')render()});
+
+/* ---- input handling ---- */
+document.addEventListener('input',e=>{const k=e.target.dataset&&e.target.dataset.k;if(!k)return;const v=e.target.value,n=num(v),[a,i,j]=k.split(':');
+  if(k==='title')S.title=v;else if(k==='period')S.period=v;else if(a==='i')S.items[i].name=v;else if(a==='pf')S.people[i][j]=v;
+  else if(k==='date'){const m=norm(v).replace(/\./g,'/').match(/^(\d{4})\/(\d{1,2})\/(\d{1,2})$/),ok=m&&m[2]>=1&&m[2]<=12&&m[3]>=1&&m[3]<=31;e.target.classList.toggle('bad',!ok);if(ok)S.evalDate=`${m[1]}/${p2(m[2])}/${p2(m[3])}`}
+  else{e.target.classList.toggle('bad',isNaN(n)&&v!=='');const x=isNaN(n)?0:n;
+    if(k==='total')S.total=x;else if(k==='eq')S.eq=Math.min(100,Math.max(0,x));else if(k==='base')S.base=x;else if(a==='w')S.items[i].w=x;else if(a==='s')S.scores[i][j]=x}
+  live();touch()});
+document.addEventListener('change',e=>{const k=e.target.dataset&&e.target.dataset.k;if(!k)return;const[a,i,j]=k.split(':');
+  if(['total','eq','base'].includes(k)||a==='w'||a==='s'){const n=num(e.target.value);if(!isNaN(n))e.target.value=k==='total'?money(S.total):ns(k==='eq'?S.eq:n)}
+  else if(k==='date')e.target.value=dateStr(S.evalDate)});
+
+function ask(html,yes){$('ovt').innerHTML=html;$('ov').style.display='flex';$('ovy').onclick=()=>{$('ov').style.display='none';yes()};$('ovn').onclick=()=>$('ov').style.display='none'}
+let tt;function toast(m){const t=$('toast');t.textContent=m;t.style.display='block';clearTimeout(tt);tt=setTimeout(()=>t.style.display='none',2600)}
+function dl(b,name){const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),2000)}
+
+/* ---- backup / restore ---- */
+function askBackup(){const s=jNow();ask(`از همهٔ اطلاعات پشتیبان گرفته شود؟<br><small>تاریخ ثبت در محتوای فایل: ${dg(s.date+' — '+s.time)}</small>`,async()=>{
+  const t=jNow(),pack={app:'Bonus',schema:2,backupDateJalali:t.date,backupTime:t.time,backupISO:t.iso,data:A};
+  const ok=await saveFile(new Blob([JSON.stringify(pack,null,2)],{type:'application/json'}),`bonus-backup-${t.date.replace(/\//g,'-')}_${t.time.replace(':','')}.json`);
+  if(ok){try{localStorage.setItem(KEY+'-bk',t.date+' — '+t.time)}catch(e){}render();toast('پشتیبان ذخیره شد')}else toast('ذخیره لغو شد')})}
+async function saveFile(blob,name){
+  try{
+    if(window.showSaveFilePicker){const ext=name.split('.').pop(),h=await showSaveFilePicker({suggestedName:name,types:[{description:ext.toUpperCase(),accept:{[blob.type||'application/octet-stream']:['.'+ext]}}]});const w=await h.createWritable();await w.write(blob);await w.close();return true}
+    const f=new File([blob],name,{type:blob.type});
+    if(navigator.canShare&&navigator.canShare({files:[f]})){await navigator.share({files:[f],title:name});return true}
+  }catch(e){if(e&&e.name==='AbortError')return false}
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([blob],{type:'application/octet-stream'}));a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),4000);return true}
+async function xsave(wb,name){const b=XLSX.write(wb,{type:'array',bookType:'xlsx'});if(await saveFile(new Blob([b],{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'}),name))toast('فایل ذخیره شد')}
+$('bf').onchange=e=>{const f=e.target.files[0];e.target.value='';if(!f)return;const r=new FileReader();
+  r.onload=()=>{try{const p=JSON.parse(r.result);if(p.app!=='Bonus'||!p.data||!Array.isArray(p.data.items)||!Array.isArray(p.data.people))throw 0;
+    ask(`این پشتیبان بازیابی شود؟ اطلاعات فعلی جایگزین می‌شود.<br><small>تاریخ ثبت پشتیبان: ${dg(p.backupDateJalali+' — '+p.backupTime)}<br>${dg(p.data.people.length)} نفر، ${dg(p.data.items.length)} آیتم، ${dg((p.data.periods||[]).length)} دوره ثبت‌شده</small>`,()=>{setApplied(migrate(p.data));save();sel=0;render();toast('بازیابی شد')})}catch(x){toast('فایل پشتیبان معتبر نیست')}};r.readAsText(f)};
+
+/* ---- excel ---- */
+const C=(v,f,z)=>{const c={t:typeof v==='number'?'n':'s',v};if(f)c.f=f;if(z)c.z=z;return c};
+function exportXlsx(tpl){if(!window.XLSX)return toast('کتابخانه اکسل بارگذاری نشد');
+  const B0=blank(true),D=tpl?Object.assign({},A,{people:B0.people,scores:B0.scores,items:B0.items}):A,n=D.people.length,m=D.items.length,L=j=>XLSX.utils.encode_col(2+j),sumRow=10+m;
+  const A=[[D.title],['راهنما: فقط خانه‌های زرد را ویرایش کنید؛ بقیه فرمول است.'],['تاریخ ارزیابی (شمسی)',D.evalDate],['مبلغ کل (تومان)',C(D.total,null,'#,##0')],['درصد بخش مساوی',C(D.eq/100,null,'0%')],['نمره پایه',D.base],['درصد بخش متغیر',C(1-D.eq/100,'1-B5','0%')],[],['آیتم','وزن',...D.people.map(p=>p.name)]];
+  D.items.forEach((it,i)=>A.push([it.name,it.w,...D.scores[i].map(Number)]));
+  A.push(['جمع',C(D.items.reduce((a,b)=>a+b.w,0),`SUM(B10:B${9+m})`),...D.people.map((_,j)=>C(D.scores.reduce((a,r)=>a+(+r[j]||0),0),`SUM(${L(j)}10:${L(j)}${9+m})`))]);
+  const w1=XLSX.utils.aoa_to_sheet(A);w1['!cols']=[{wch:55},{wch:10},...D.people.map(()=>({wch:12}))];
+  const sc=D.people.map((_,j)=>D.scores.reduce((a,r)=>a+(+r[j]||0),0)),ex=sc.map(x=>Math.max(0,x-D.base)),se=ex.reduce((a,b)=>a+b,0),N="'نمرات'!",tr=4+n;
+  const R=[['محاسبه سهم هر نفر (تومان)'],[],['نفر','نمره','مازاد از نمره پایه','بخش مساوی','بخش متغیر','مجموع سهم','درصد از کل']];
+  D.people.forEach((p,j)=>{const r=4+j,eqv=D.total*D.eq/100/n,pool=D.total*(1-D.eq/100),vv=se?pool*ex[j]/se:pool/n;
+    R.push([C(p.name,`${N}${L(j)}9`),C(sc[j],`${N}${L(j)}${sumRow}`),C(ex[j],`MAX(0,B${r}-${N}$B$6)`),C(eqv,`${N}$B$4*${N}$B$5/${n}`,'#,##0'),C(vv,`IF(C$${tr}=0,${N}$B$4*${N}$B$7/${n},${N}$B$4*${N}$B$7*C${r}/C$${tr})`,'#,##0'),C(eqv+vv,`D${r}+E${r}`,'#,##0'),C((eqv+vv)/D.total,`F${r}/${N}$B$4`,'0.0%')])});
+  const sf=k=>C(0,`SUM(${k}4:${k}${3+n})`);R.push(['جمع',sf('B'),sf('C'),sf('D'),sf('E'),sf('F'),C(1,`SUM(G4:G${3+n})`,'0.0%')]);
+  const w2=XLSX.utils.aoa_to_sheet(R);w2['!cols']=[{wch:18},...Array(6).fill({wch:16})];
+  const w3=XLSX.utils.aoa_to_sheet([['نام','کد پرسنلی','سمت','تلفن','توضیحات'],...D.people.map(p=>[p.name,p.code,p.role,p.phone,p.note])]);w3['!cols']=[{wch:20},{wch:14},{wch:18},{wch:16},{wch:30}];
+  const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,w1,'نمرات');XLSX.utils.book_append_sheet(wb,w2,'نتیجه');XLSX.utils.book_append_sheet(wb,w3,'افراد');wb.Workbook={Views:[{RTL:true}]};
+  xsave(wb,tpl?'Bonus-template.xlsx':`Bonus-${jNow().date.replace(/\//g,'-')}.xlsx`)}
+$('xf').onchange=e=>{const f=e.target.files[0];e.target.value='';if(!f)return;if(!window.XLSX)return toast('کتابخانه اکسل بارگذاری نشد');const r=new FileReader();
+  r.onload=()=>{try{const wb=XLSX.read(r.result,{type:'array'}),ws=wb.Sheets['نمرات']||wb.Sheets[wb.SheetNames[0]],T=x=>String(x).trim(),R=XLSX.utils.sheet_to_json(ws,{header:1,raw:true,defval:''});
+    const h=R.findIndex(r=>T(r[0])==='آیتم');if(h<0)throw 0;const N=Object.assign(blank(),{items:[],people:[],scores:[]});N.digits=S.digits;N.periods=A.periods;
+    for(let k=0;k<h;k++){const l=T(R[k][0]),v=num(R[k][1]);if(l.includes('مبلغ کل')&&!isNaN(v))N.total=v*(l.includes('میلیون')?1e6:1);else if(l.includes('مساوی')&&!isNaN(v))N.eq=v<=1?v*100:v;else if(l.includes('نمره پایه')&&!isNaN(v))N.base=v;else if(l.includes('تاریخ')&&T(R[k][1]))N.evalDate=norm(R[k][1]).replace(/\./g,'/');else if(k===0&&l)N.title=l}
+    const info=wb.Sheets['افراد']?XLSX.utils.sheet_to_json(wb.Sheets['افراد'],{header:1,raw:true,defval:''}).slice(1):[];
+    for(let j=2;T(R[h][j]||'')!=='';j++){const nm=T(R[h][j]),p=P(nm),x=info.find(z=>T(z[0])===nm);if(x)Object.assign(p,{code:T(x[1]),role:T(x[2]),phone:T(x[3]),note:T(x[4])});N.people.push(p)}
+    for(let k=h+1;k<R.length;k++){const row=R[k];if(T(row[0])==='جمع'||(T(row[0])===''&&T(row[1])===''))break;N.items.push({name:T(row[0]),w:num(row[1])||0});N.scores.push(N.people.map((_,j)=>num(row[2+j])||0))}
+    if(!N.people.length||!N.items.length)throw 0;
+    ask(`فایل «${esc(f.name)}» وارد شود؟ اطلاعات فعلی (به‌جز دوره‌های ثبت‌شده) جایگزین می‌شود.<br><small>${dg(N.people.length)} نفر، ${dg(N.items.length)} آیتم</small>`,()=>{setApplied(N);save();sel=0;render();toast('وارد شد')})}catch(x){toast('ساختار فایل اکسل مطابق قالب نیست')}};r.readAsArrayBuffer(f)};
+
+if('serviceWorker' in navigator&&location.protocol.startsWith('http'))navigator.serviceWorker.register('sw.js').catch(()=>{});
+render();
+</script>
+</body>
+</html>
